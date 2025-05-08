@@ -1,0 +1,25 @@
+﻿@page "/dashboard"
+@inject HttpClient Http
+
+<h3>Portfolio Dashboard</h3>
+
+<p><strong>Total Value:</strong> @totalValue</p>
+
+<h4>By Account Type</h4>
+<ul>
+    @foreach (var item in accountTypeTotals)
+    {
+        <li>@item.Key: @item.Value</li>
+    }
+</ul>
+
+@code {
+    decimal totalValue;
+    Dictionary<string, decimal> accountTypeTotals = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalValue = await Http.GetFromJsonAsync<decimal>("https://localhost:5001/api/portfolio/total");
+        accountTypeTotals = await Http.GetFromJsonAsync<Dictionary<string, decimal>>("https://localhost:5001/api/portfolio/by-type");
+    }
+}
